@@ -4,12 +4,16 @@ import LancamentoService from '../app/service/lancamentoService'
 import { mensagemErro,mensagemSucesso } from '../components/toastr'
 import { withRouter } from 'react-router-dom'
 import Card from '../components/card'
+import currencyFormatter from 'currency-formatter'
+import {ConfirmDialog} from 'primereact/confirmdialog'
 
 class ConsultaLancamento extends React.Component {
     state = {
         tipo : '',
         lancamentos : [] ,
-        rows :[]
+        rows :[],
+        confirmacaoCancelamentoVisivel : false,
+        lancamentoSelecionado : {}
     }
 
     constructor(){
@@ -24,8 +28,8 @@ class ConsultaLancamento extends React.Component {
         this.setState({[name] : value})
     }
 
-    deletar = (lancamento) => {
-        this.lancamentoService.deletar(lancamento.id).then(response =>{
+    deletar = () =>{
+        this.lancamentoService.deletar(this.state.lancamentoSelecionado.id).then(response =>{
            /*  const lancamentos = this.state.lancamentos
             console.log(lancamentos)
             const index  = lancamentos.indexOf(lancamento)
@@ -36,10 +40,14 @@ class ConsultaLancamento extends React.Component {
 
             mensagemSucesso('Lancamento deletado com sucesso.')
             this.pesquisar()
-            
+            this.setState({confirmacaoCancelamentoVisivel : false})
         }).catch(error =>{
             console.log(error)
         })
+    }
+
+    confirmarDelecao = (lancamento) => {
+        this.setState({confirmacaoCancelamentoVisivel:true,lancamentoSelecionado : lancamento})
     }
 
     editar = (id) => {
@@ -60,10 +68,10 @@ class ConsultaLancamento extends React.Component {
                 return (
                     <tr key={index}>
                         <td>{lancamento.tipoLancamento}</td>
-                        <td>{lancamento.valor}</td>
+                        <td>{currencyFormatter.format(lancamento.valor,{locale:'pt-BR'})}</td>
                         <td>
                             <button onClick={e => this.editar(lancamento.id)} className="btn btn-primary">Editar</button> 
-                            <button onClick={e => this.deletar(lancamento)} className="btn btn-danger">Excluir</button>
+                            <button onClick={e => this.confirmarDelecao(lancamento)} className="btn btn-danger">Excluir</button>
                         </td>
                     </tr>
                 )
@@ -71,7 +79,14 @@ class ConsultaLancamento extends React.Component {
             
             this.setState({rows : trs})
         }).catch(error =>{
-            console.log(error)
+            /* debugge */
+            if(error.message){
+                mensagemErro('Nao foi possivel acessa o servidor')
+            }
+            else if(error.response) {
+                mensagemErro(error.response.data)
+            }
+            
         })
     }
 
@@ -82,8 +97,6 @@ class ConsultaLancamento extends React.Component {
 
     render(){
         const tiposLancamentos = this.lancamentoService.tiposLancamentos()
-
-        console.log(tiposLancamentos)
 
         return(
             <div>
@@ -110,6 +123,15 @@ class ConsultaLancamento extends React.Component {
                             </tbody>
 
                         </table>
+                        
+                        <ConfirmDialog 
+                        visible={this.state.confirmacaoCancelamentoVisivel} 
+                        onHide={() => this.setState({confirmacaoCancelamentoVisivel : false})} 
+                        message="Você realmente deseja excluir este lancamento?"
+                        header="Confirmação" 
+                        icon="pi pi-exclamation-triangle" 
+                        accept={() =>this.deletar()} 
+                        reject={() => this.setState({confirmacaoCancelamentoVisivel : false})} />
                     </Card>
                 </div>
             </div>

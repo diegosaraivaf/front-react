@@ -20,7 +20,6 @@ class CadastroLancamento extends React.Component{
 
     componentDidMount(){
         const parametros = this.props.match.params
-        console.log(parametros)
         
         if(parametros.id){
             this.lancamentoService.obterPorId(parametros.id).then(response =>{
@@ -79,11 +78,7 @@ class CadastroLancamento extends React.Component{
             <div>
                 <div className="container">
                     <Card title={this.state.atualizando ? 'Atualização de Lancamento' : 'Cadastro de Lancamento'}>
-                        
-                         Tipo
-                        <input value={this.state.tipoLancamento} name="tipoLancamento" 
-                        onChange={this.handleChange} className="form-control"/>
-                        
+
                         Tipo
                         <SelectMenu name="tipoLancamento" value={this.state.tipoLancamento} 
                         lista={tiposLancamentos} 

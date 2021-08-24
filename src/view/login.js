@@ -1,11 +1,16 @@
 import React from 'react'
 import Card from  '../components/card'
 import { withRouter } from 'react-router-dom'
-import axios from 'axios'
 import { mensagemErro } from '../components/toastr'
+import UsuarioService from '../app/service/usuarioService'
+import LocalStorageService from '../app/service/localStorageService'
 
 
 class Login extends  React.Component{
+    constructor(){
+        super()
+        this.usuarioService = new UsuarioService()
+    }
     state ={
         email: '',
         senha: ''
@@ -17,6 +22,12 @@ class Login extends  React.Component{
 
         if(!this.state.email){
             msgs.push('Campo email e obrigatorio')
+        }else if(!this.state.email.match(/^[a-z0-9.]+@[a-z0-9]+\.[a-z]/)){
+            msgs.push('Informe um email valido')
+        }
+
+        if(!this.state.senha){
+            msgs.push('Campo senha obrigatorio')
         }
 
         return msgs
@@ -27,29 +38,26 @@ class Login extends  React.Component{
         console.log('senha:' , this.state.senha) */
 
         const msgs = this.validar()
+
         if(msgs && msgs.length > 0){
             msgs.forEach((msg,index) => {
                 mensagemErro(msg)
             })
             return false
         }
-
-        console.log('passo por aqui ')
-
-
-        axios.get('http://localhost:8080/api/pessoa/1',
+        
+        this.usuarioService.autenticar(
         {
-            nome: this.state.email,
-            endereco: this.state.senha
+            email: this.state.email,
+            senha: this.state.senha
         }).then(response =>{
             console.log(response)
 
             /* adicionad o usuario logado em uma "sessao",no localstorage */
-            localStorage.setItem('_usuario_logado', JSON.stringify(response.data))
+            LocalStorageService.adicionarItem('_usuario_logado', response.data)
 
             /* pega o usuario do localstorage */
-            const usuarioLogadoString = localStorage.getItem('_usuario_logado')
-            const usuarioLogado = JSON.parse(usuarioLogadoString)
+            const usuarioLogado = localStorage.getItem('_usuario_logado')
             console.log('usuario logado > ',usuarioLogado)
 
             /* concatenacao  */
@@ -58,7 +66,7 @@ class Login extends  React.Component{
             this.props.history.push('/home')
         }).catch(erro => {
             console.log(erro.response)
-            mensagemErro(erro.response.data.descricao)
+            mensagemErro(erro.response.data)
         })
     }
 

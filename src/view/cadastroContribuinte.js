@@ -30,6 +30,7 @@ class CadastroContribuinte extends React.Component {
         }
          this.contribuinteService.salvar(contribuinte).then(response =>{
             mensagemSucesso('Contribuinte cadastrado com sucesso.')
+            this.props.history.push('consulta-contribuinte')
          }).catch(error =>{
             mensagemErro(error.response.data)
          })
@@ -57,7 +58,7 @@ class CadastroContribuinte extends React.Component {
                         onChange={this.handleChange}className="form-control"/>
                         <br/>
                         <button onClick={this.salvar} className="btn btn-success">Salvar</button>
-                        <button className="btn btn-danger">Cancelar</button>
+                        <button onClick={e => this.props.history.push('/consulta-contribuinte')} className="btn btn-danger">Cancelar</button>
                     </Card>
                 </div>
             </div>

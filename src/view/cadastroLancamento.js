@@ -15,6 +15,8 @@ class CadastroLancamento extends React.Component{
         id : null,
         tipoLancamento : '',
         valor : '',
+        documento: '',
+        nome: '',
         atualizando : false
     }
 
@@ -71,6 +73,12 @@ class CadastroLancamento extends React.Component{
         })
     }
 
+    aoAlterarDocumento = (event) => {
+        this.setState({documento : event.target.value})
+
+
+    }
+
     render(){
         const tiposLancamentos = this.lancamentoService.tiposLancamentos()
 
@@ -86,7 +94,10 @@ class CadastroLancamento extends React.Component{
                         className="form-control"/>
 
                         Valor
-                        <input value={this.state.valor} name="valor"onChange={this.handleChange} className="form-control"/>
+                        <input value={this.state.valor} name="valor" onChange={this.handleChange} className="form-control"/>
+                        
+                        Documento
+                        <input value={this.state.documento} onChange={this.aoAlterarDocumento} className="form-control" />
                         <br/>
                         {
                             this.state.atualizando 

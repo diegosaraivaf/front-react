@@ -8,6 +8,7 @@ import currencyFormatter from 'currency-formatter'
 import {ConfirmDialog} from 'primereact/confirmdialog'
 
 class ConsultaLancamento extends React.Component {
+
     state = {
         tipo : '',
         lancamentos : [] ,

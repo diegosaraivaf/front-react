@@ -8,16 +8,17 @@ import 'toastr/build/toastr.min.js'
 import 'primereact/resources/themes/saga-blue/theme.css'
 import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
+import ProvedorAutenticacao from '../context/provedorAutenticacao'
 
 
 /* function App() { */
 class App extends React.Component {
   render(){
     return(
-      <div>
+      <ProvedorAutenticacao>
         <Navbar/>
         <Rotas/>
-      </div>
+      </ProvedorAutenticacao>
     )
   }
 }

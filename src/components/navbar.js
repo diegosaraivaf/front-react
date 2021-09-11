@@ -1,17 +1,17 @@
 import React from 'react'
-import AutenticacaoService from '../app/service/autenticacaoService'
+import { AuthConsumer } from '../context/provedorAutenticacao'
 
-const deslogar = () =>{
+/* const deslogar = () =>{
     AutenticacaoService.removerUsuarioAutenticado()
+    window.location.reload();
 }
 
 const isUsuarioAutenticado = () => {
     console.log('isUsuarioauteticado',AutenticacaoService.isUsuarioAutenticado())
     return AutenticacaoService.isUsuarioAutenticado()
-}
+} */
 
 function ItemLi({render,...props}){
-    console.log('render ' ,render)
     if(render){
         return(
             <li className="nav-item" >
@@ -23,8 +23,9 @@ function ItemLi({render,...props}){
     }
 }
 
-function Navbar(){
-    console.log('passo navbar')
+function Navbar(props){
+    console.log('navebar')
+
     return(
         <div className="navbar navbar-expand-lg fixed-top navbar-dark bg-primary" >
             <div className="container">
@@ -36,15 +37,16 @@ function Navbar(){
                     
                     
                     <ul className="navbar-nav">
-                        <ItemLi render={isUsuarioAutenticado()} label="Home" href="#/home"/>
+                        {/* <ItemLi render={isUsuarioAutenticado()} label="Home" href="#/home"/> */}
+                        {/* <ItemLi render={true} label="Home" href="#/home"/> */}
 
-                        <ItemLi render={isUsuarioAutenticado()} label="Usuários" href="#/cadastro-usuario"/>
+                        <ItemLi render={props.isUsuarioAutenticado} label="Usuários" href="#/cadastro-usuario"/>
 
-                        <ItemLi render={isUsuarioAutenticado()} label="Contribuinte" href="#/cadastro-contribuinte"/>
+                        <ItemLi render={props.isUsuarioAutenticado} label="Contribuinte" href="#/consulta-contribuinte"/>
 
-                        <ItemLi render={isUsuarioAutenticado()} label="Lançamentos" href="#/consulta-lancamento"/>
+                        <ItemLi render={props.isUsuarioAutenticado} label="Lançamentos" href="#/consulta-lancamento"/>
 
-                        <ItemLi render={isUsuarioAutenticado()} label="Sair" href="#/login" onClick={deslogar}/>
+                        <ItemLi render={props.isUsuarioAutenticado} label="Sair" href="#/login" onClick={props.deslogar}/>
                     </ul>
                 </div>
             </div>
@@ -52,4 +54,10 @@ function Navbar(){
     )
 }
 
-export default Navbar
+export default () => (
+    <AuthConsumer>
+        {(context) => (
+            <Navbar isUsuarioAutenticado={context.isAutenticado} deslogar={context.encerrarSessao}/>
+        )}
+    </AuthConsumer>
+)

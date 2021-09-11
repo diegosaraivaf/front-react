@@ -8,4 +8,13 @@ export default class ContribuinteService extends ApiService {
     salvar(contribuinte){
         return this.post('/',contribuinte)
     }
+
+    pesquisar(){
+        return this.get('/')
+    }
+
+    deletar(contribuinte){
+        console.log(contribuinte)
+        return this.delete(`/${contribuinte.id}`)
+    }
 }

@@ -7,6 +7,7 @@ import ConsultaLancamento from '../view/consultaLancamento'
 import CadastroLancamento from '../view/cadastroLancamento'
 import AutenticacaoService from '../app/service/autenticacaoService'
 import CadastroContribuinte from '../view/cadastroContribuinte'
+import ConsultaContribuinte from '../view/consultaContribuinte'
 
 /* const autenticacaoService = new AutenticacaoService() */
 
@@ -16,7 +17,7 @@ function RotaAutenticada({component : Component, ...props}){
 			if(AutenticacaoService.isUsuarioAutenticado()){
 				return (<Component {...componentProps} />)
 			}else{
-				return (<Redirect to={{pathname:'login',state:{from:componentProps.loaction}}}/>)
+				return (<Redirect to={{pathname:'login',state:{from:componentProps.location}}}/>)
 			}
 		}} 
 		/>
@@ -27,11 +28,13 @@ function Rotas(){
 	return(
 		<HashRouter>
 			<Switch>
+				<Route exact path="/" component ={Login}/>
 				<Route path="/login" component ={Login}/>
 				<Route path="/cadastro-usuario" component ={CadastroUsuario}/>
 				<RotaAutenticada path="/home" component ={Home}/>
 				<RotaAutenticada path="/consulta-lancamento" component={ConsultaLancamento} />
 				<RotaAutenticada path="/cadastro-lancamento/:id?" component={CadastroLancamento}/>
+				<RotaAutenticada path="/consulta-contribuinte" component={ConsultaContribuinte}/>
 				<RotaAutenticada path="/cadastro-contribuinte/:id?" component={CadastroContribuinte}/>
 			</Switch>
 		</HashRouter>	

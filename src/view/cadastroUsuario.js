@@ -1,5 +1,7 @@
 import React from 'react'
 import UsuarioService from '../app/service/usuarioService'
+import Card from '../components/card'
+import { mensagemSucesso } from '../components/toastr'
 
 class CadastroUsuario extends React.Component{
     state = {
@@ -14,9 +16,9 @@ class CadastroUsuario extends React.Component{
     
 
     salvar = () =>{
-        console.log(this.state)
         this.usuarioService.salvar(this.state).then(response => {
-            console.log('usuario salvo com sucesso')
+            mensagemSucesso('Usuario salvo com sucesso')
+            this.props.history.push('/consulta-usuario')
         }).catch(erro => {
             console.log(erro.response.data)
         })
@@ -32,13 +34,16 @@ class CadastroUsuario extends React.Component{
     render(){
         return(
             <div>
-                Email
-                <input name="email" onChange={this.handleChange}/>
-                <br/>
-                Senha
-                <input name="senha" onChange={this.handleChange}/>
-                <br/>
-                <button onClick={this.salvar} >Salvar</button>
+                <div className="container">
+                    <Card title="Cadastro Usuario">
+                        Email
+                        <input name="email" onChange={this.handleChange} className="form-control"/>
+                        Senha
+                        <input name="senha" onChange={this.handleChange} className="form-control"/>
+                        <button onClick={this.salvar} className="btn btn-success" >Salvar</button>
+                        <button onClick={e => this.props.history.push('/consulta-usuario')} className="btn btn-danger">Cancelar</button>
+                    </Card>
+                </div>
             </div>
         )
     }

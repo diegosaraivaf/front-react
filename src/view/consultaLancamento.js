@@ -68,6 +68,8 @@ class ConsultaLancamento extends React.Component {
             const trs =  this.state.lancamentos.map((lancamento,index) =>{
                 return (
                     <tr key={index}>
+                        <td>{lancamento.contribuinte ? lancamento.contribuinte.documento 
+                        + ' - '+ lancamento.contribuinte.nome : ''}</td>
                         <td>{lancamento.tipoLancamento}</td>
                         <td>{currencyFormatter.format(lancamento.valor,{locale:'pt-BR'})}</td>
                         <td>
@@ -114,6 +116,7 @@ class ConsultaLancamento extends React.Component {
                         <table className="table">
                             <thead>
                                 <tr>
+                                    <th>Contribuinte</th>
                                     <th>Tipo</th>
                                     <th>Valor</th>
                                 </tr>

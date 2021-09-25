@@ -9,6 +9,10 @@ class UsuarioService extends ApiService{
         return this.post('/',usuario)
     }
 
+    pesquisar(){
+        return this.get('/')
+    }
+
     autenticar(usuario){
         return this.post('/autenticar/',usuario)
     }

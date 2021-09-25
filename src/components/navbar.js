@@ -40,7 +40,7 @@ function Navbar(props){
                         {/* <ItemLi render={isUsuarioAutenticado()} label="Home" href="#/home"/> */}
                         {/* <ItemLi render={true} label="Home" href="#/home"/> */}
 
-                        <ItemLi render={props.isUsuarioAutenticado} label="Usuários" href="#/cadastro-usuario"/>
+                        <ItemLi render={props.isUsuarioAutenticado} label="Usuários" href="#/consulta-usuario"/>
 
                         <ItemLi render={props.isUsuarioAutenticado} label="Contribuinte" href="#/consulta-contribuinte"/>
 

@@ -13,6 +13,10 @@ export default class ContribuinteService extends ApiService {
         return this.get('/')
     }
 
+    buscarPorDocumento(documento){
+        return this.get(`/documento/${documento}`)
+    }
+
     deletar(contribuinte){
         console.log(contribuinte)
         return this.delete(`/${contribuinte.id}`)

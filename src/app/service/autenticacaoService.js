@@ -11,9 +11,9 @@ export default class AutenticacaoService {
         const token = LocalStorageService.obterItem(TOKEN_ACESSO)
 
         if(token){
-            console.log('token ',token)
+            console.log('verificando se usuario esta logado ')
             const decodedToken = jwt.decode(token)
-            console.log('decoded token ',decodedToken)
+
             const expiracao = decodedToken.exp
             const isTokenInvalido = Date.now() >= (expiracao * 1000)
 

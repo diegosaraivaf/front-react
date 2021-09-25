@@ -8,6 +8,7 @@ import CadastroLancamento from '../view/cadastroLancamento'
 import AutenticacaoService from '../app/service/autenticacaoService'
 import CadastroContribuinte from '../view/cadastroContribuinte'
 import ConsultaContribuinte from '../view/consultaContribuinte'
+import ConsultaUsuario from '../view/consultaUsuario'
 
 /* const autenticacaoService = new AutenticacaoService() */
 
@@ -36,6 +37,7 @@ function Rotas(){
 				<RotaAutenticada path="/cadastro-lancamento/:id?" component={CadastroLancamento}/>
 				<RotaAutenticada path="/consulta-contribuinte" component={ConsultaContribuinte}/>
 				<RotaAutenticada path="/cadastro-contribuinte/:id?" component={CadastroContribuinte}/>
+				<RotaAutenticada path="/consulta-usuario" component={ConsultaUsuario}/>
 			</Switch>
 		</HashRouter>	
 	)

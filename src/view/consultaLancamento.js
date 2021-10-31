@@ -6,13 +6,15 @@ import { withRouter } from 'react-router-dom'
 import Card from '../components/card'
 import currencyFormatter from 'currency-formatter'
 import {ConfirmDialog} from 'primereact/confirmdialog'
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
 class ConsultaLancamento extends React.Component {
 
     state = {
         tipo : '',
         lancamentos : [] ,
-        rows :[],
+        /* rows :[], */
         confirmacaoCancelamentoVisivel : false,
         lancamentoSelecionado : {}
     }
@@ -65,7 +67,7 @@ class ConsultaLancamento extends React.Component {
         this.lancamentoService.consultar(lancamentoFiltro).then(response =>{
             this.setState({lancamentos:response.data})
 
-            const trs =  this.state.lancamentos.map((lancamento,index) =>{
+            /* const trs =  this.state.lancamentos.map((lancamento,index) =>{
                 return (
                     <tr key={index}>
                         <td>{lancamento.contribuinte ? lancamento.contribuinte.documento 
@@ -80,7 +82,7 @@ class ConsultaLancamento extends React.Component {
                 )
             })
             
-            this.setState({rows : trs})
+            this.setState({rows : trs}) */
         }).catch(error =>{
             /* debugge */
             if(error.message){
@@ -95,6 +97,19 @@ class ConsultaLancamento extends React.Component {
 
     prepararCadastro = () =>{
         this.props.history.push('cadastro-lancamento')
+    }
+
+    documentoNome(rowData) {
+        return rowData.contribuinte.documento +' - '+ rowData.contribuinte.nome 
+    }
+
+    colunaAcoes = (lanc) =>{
+        return (
+            <div>
+                <button onClick={e => this.editar(lanc.id)} className="btn btn-primary">Editar</button> 
+                <button onClick={e => this.confirmarDelecao(lanc)} className="btn btn-danger">Excluir</button>
+            </div>
+        )
     }
 
 
@@ -113,7 +128,7 @@ class ConsultaLancamento extends React.Component {
                         <button onClick={this.pesquisar} className="btn btn-success">Pesquisar</button>
                         <button onClick={this.prepararCadastro} className="btn btn-danger">Cadrastrar</button> 
 
-                        <table className="table">
+                        {/* <table className="table">
                             <thead>
                                 <tr>
                                     <th>Contribuinte</th>
@@ -126,7 +141,22 @@ class ConsultaLancamento extends React.Component {
                                 {this.state.rows}
                             </tbody>
 
-                        </table>
+                        </table> */}
+
+{/*          
+  <div>
+                <button onClick={e => this.editar(lanc)} className="btn btn-primary">Editar</button> 
+                <button onClick={e => this.confirmarDelecao(lanc)} className="btn btn-danger">Excluir</button>
+            </div>
+    } */}
+                        <div className="card">
+                            <DataTable value={this.state.lancamentos} >
+                                <Column body={(row)=> row.contribuinte.documento +' - '+ row.contribuinte.nome} header="Contribuinte"/>
+                                <Column field="tipoLancamento" header="Tipo"/>
+                                <Column body={(lancamento)=>currencyFormatter.format(lancamento.valor,{locale:'pt-BR'}) } header="Valor"/>
+                                <Column body={this.colunaAcoes} header="Acoes"></Column> 
+                            </DataTable>
+                        </div>
                         
                         <ConfirmDialog 
                         visible={this.state.confirmacaoCancelamentoVisivel} 

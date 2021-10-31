@@ -5,6 +5,8 @@ import Card from '../components/card'
 import { withRouter } from 'react-router-dom'
 import { mensagemErro,mensagemSucesso } from '../components/toastr'
 import SelectMenu from '../components/selectMenu'
+import { DataTable} from 'primereact/datatable'
+import { Column } from 'primereact/column';
 
 class CadastroLancamento extends React.Component{
     constructor(){
@@ -23,7 +25,11 @@ class CadastroLancamento extends React.Component{
             documento: '',
             endereco: ''
         },
+        rows : [],
+        parcelas :[],
+        qtdParcela : '',
         atualizando : false
+        ,x:''
     }
 
     componentDidMount(){
@@ -31,9 +37,12 @@ class CadastroLancamento extends React.Component{
         
         if(parametros.id){
             this.lancamentoService.obterPorId(parametros.id).then(response =>{
-                console.log('response ',response)
                 /* spread opetator - seta altomaticamente os atributos com o mesmo nome*/
-                this.setState({...response.data,atualizando : true})
+                this.setState({
+                    ...response.data,
+                    atualizando : true,
+                    qtdParcela : response.data.parcelas.length
+                }, () => { this.preencherTabelaComParcelas()})
             }).catch(error =>{
                 if(error.response.data){
                     mensagemErro(error.response.data)
@@ -49,14 +58,39 @@ class CadastroLancamento extends React.Component{
         const name = event.target.name
 
         this.setState({[name] : value})
+        console.log(name,value)
+
+      /*   const parcelasNova = [{valor : 111111}]  
+        this.setState({
+            parcelas: parcelasNova
+        }, () =>{
+        console.log(this.state.parcelas)
+        }
+        ) */
+        
+
+
+    }
+
+    handleInputChange = (event) => {
+        let parcelas = this.state.parcelas;
+        for(let i in parcelas){
+            if(i == event.target.name){
+                parcelas[i].valor = event.target.value;
+                this.setState ({parcelas});
+                break;
+            }
+        }
     }
 
     salvar = () =>{
-        const  {tipoLancamento,valor,contribuinte} = this.state
+        const  {tipoLancamento,valor,contribuinte,parcelas} = this.state
+        
         const lancamento = {
             tipoLancamento,
             valor,
-            contribuinte
+            contribuinte,
+            parcelas
         }
         this.lancamentoService.salvar(lancamento).then(response =>{
             mensagemSucesso('Lancamento salvo com sucesso')
@@ -68,12 +102,13 @@ class CadastroLancamento extends React.Component{
 
     atualizar = () =>{
         console.log(this.state)
-        const  {id,tipoLancamento,valor,contribuinte} = this.state
+        const  {id,tipoLancamento,valor,contribuinte,parcelas} = this.state
         const lancamento = {
             id,
             tipoLancamento,
             valor,
-            contribuinte
+            contribuinte,
+            parcelas
         }
         this.lancamentoService.atualizar(lancamento).then(response =>{
             mensagemSucesso('Lancamento atualizado com sucesso')
@@ -110,6 +145,49 @@ class CadastroLancamento extends React.Component{
         })
     } 
 
+    atualizarParcelas = (event) =>{
+        const qtdParcela = event.target.value
+        const valor = this.state.valor
+        this.setState({qtdParcela : qtdParcela}, () => { this.preencherTabelaComParcelas()})
+
+        const listaParcelas = []
+        const valorDivisao = (valor/qtdParcela).toFixed(2)
+        for (var i = 0; i < qtdParcela; i++) {
+            listaParcelas.push({valor : valorDivisao})
+        }
+        this.setState({parcelas : listaParcelas})
+
+    }
+
+    preencherTabelaComParcelas = () => {
+       
+        const qtdParcela = this.state.qtdParcela
+        const valor = this.state.valor
+
+        if(!valor){
+            return 
+        }
+        const valorDivisao = (valor/qtdParcela).toFixed(2) 
+        const linhas = []
+        console.log('preenche parcela >',this.state.qtdParcela)
+        for (var i = 0; i < this.state.qtdParcela; i++) {
+            linhas.push(
+                <tr key={i}>
+                    <td>{valorDivisao}</td>
+                </tr>
+            )
+            
+        }
+        this.setState({rows : linhas})
+    }
+
+    tabelaChange = (e) =>{
+        const value = e.target.value
+        const posicao = e.target.posicao
+        const name = e.target.name
+        
+    }
+
     render(){
         const tiposLancamentos = this.lancamentoService.tiposLancamentos()
 
@@ -137,6 +215,31 @@ class CadastroLancamento extends React.Component{
                                 <input value={this.state.contribuinte ? this.state.contribuinte.nome : ''} readOnly={true} className="form-control" />
                             </div>
                         </div>
+     
+                        Qtd. Parcelas 
+                        <input value={this.state.qtdParcela} onChange={this.atualizarParcelas} name="qtdParcela"  className="form-control"/>
+
+                   {/*      <table className="table">
+                        <thead>
+                                <tr>
+                                    <th>Valor</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                {this.state.rows}
+                            </tbody>
+                        </table> */}
+
+                        <DataTable value={this.state.parcelas} >
+                            <Column  header="Numero"/>
+                            {/* <Column field="valor" header="Valor" /> */}
+                            <Column 
+                                body={(parcela,props) => <input value={parcela.valor} name={props.rowIndex}  onChange={this.handleInputChange} /> }
+                                header="Valor" />
+                            <Column header="Vencimento" field="Index" />
+                        </DataTable>
+                        
                         <br/>
                         {
                             this.state.atualizando 

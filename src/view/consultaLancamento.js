@@ -12,11 +12,13 @@ import { Column } from 'primereact/column';
 class ConsultaLancamento extends React.Component {
 
     state = {
-        tipo : '',
-        lancamentos : [] ,
+        tipo: '',
+        contribuinteNome: '',
+        contribuinteDocumento: '',
+        lancamentos: [] ,
         /* rows :[], */
-        confirmacaoCancelamentoVisivel : false,
-        lancamentoSelecionado : {}
+        confirmacaoCancelamentoVisivel: false,
+        lancamentoSelecionado: {}
     }
 
     constructor(){
@@ -58,10 +60,13 @@ class ConsultaLancamento extends React.Component {
     }
 
     pesquisar = () =>{
+        const  {tipo,contribuinteDocumento,contribuinteNome} = this.state
         
         const lancamentoFiltro  = {
             id: null,
-            tipo: this.state.tipo
+            tipo,
+            contribuinteNome,
+            contribuinteDocumento
         }
         
         this.lancamentoService.consultar(lancamentoFiltro).then(response =>{
@@ -123,11 +128,21 @@ class ConsultaLancamento extends React.Component {
                         Tipo
                         <SelectMenu name="tipo" lista={tiposLancamentos} onChange={this.handleChange} 
                         className="form-control"/>
-                        Tipo
-                        <input name="tipo" onChange={this.handleChange} className="form-control"/>
+
+                        <div className="row">
+                            <div className="col-md-4">
+                                Documento Contribuinte
+                                <input name="contribuinteDocumento" onChange={this.handleChange} className="form-control"/>
+                            </div>
+                            <div className="col-md-8">
+                                Nome Contribuinte
+                                <input name="contribuinteNome" onChange={this.handleChange} className="form-control"/>
+                            </div>
+                        </div>
+                        <br/>
                         <button onClick={this.pesquisar} className="btn btn-success">Pesquisar</button>
                         <button onClick={this.prepararCadastro} className="btn btn-danger">Cadrastrar</button> 
-
+                        <br/> <br/>
                         {/* <table className="table">
                             <thead>
                                 <tr>
@@ -149,6 +164,7 @@ class ConsultaLancamento extends React.Component {
                 <button onClick={e => this.confirmarDelecao(lanc)} className="btn btn-danger">Excluir</button>
             </div>
     } */}
+
                         <div className="card">
                             <DataTable value={this.state.lancamentos} >
                                 <Column body={(row)=> row.contribuinte.documento +' - '+ row.contribuinte.nome} header="Contribuinte"/>

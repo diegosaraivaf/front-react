@@ -7,6 +7,7 @@ import { mensagemErro,mensagemSucesso } from '../components/toastr'
 import SelectMenu from '../components/selectMenu'
 import { DataTable} from 'primereact/datatable'
 import { Column } from 'primereact/column';
+import { Calendar } from 'primereact/calendar';
 
 class CadastroLancamento extends React.Component{
     constructor(){
@@ -26,10 +27,11 @@ class CadastroLancamento extends React.Component{
             endereco: ''
         },
         rows : [],
-        parcelas :[],
+        parcelas :[new Date()],
         qtdParcela : '',
         atualizando : false
         ,x:''
+        ,dataTeste : new Date()
     }
 
     componentDidMount(){
@@ -37,16 +39,44 @@ class CadastroLancamento extends React.Component{
         
         if(parametros.id){
             this.lancamentoService.obterPorId(parametros.id).then(response =>{
+                let parcelas = response.data.parcelas
+                for(var i = 0; i < parcelas.length; i++){
+                   
+                    if(parcelas[i].dataVencimento){
+                        /*converte string da api em Date do java scrip.necessario fazer isso pq 
+                        date so aceita o forma yyyy-mm-dd e a string esta no formato dd-mm-yyyy.
+                        o split foi necessario pq por algum motivo a conversao direta da string esta 
+                        subtraindo 1 dia .
+                        */
+                        var dateParts = parcelas[i].dataVencimento.split("-");
+                        var date = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+                        parcelas[i].dataVencimento = new Date(date) 
+                        
+
+                    }else{
+                        parcelas[i].dataVencimento = '' 
+                    }
+                }
+
                 /* spread opetator - seta altomaticamente os atributos com o mesmo nome*/
                 this.setState({
                     ...response.data,
                     atualizando : true,
-                    qtdParcela : response.data.parcelas.length
-                }, () => { this.preencherTabelaComParcelas()})
+                    qtdParcela : response.data.parcelas.length,
+                    parcelas:parcelas
+                }, () => { 
+                    /* this.preencherTabelaComParcelas() */
+                   
+                    /* this.setState({parcelas})  */
+                })
+                
+               
+
             }).catch(error =>{
-                if(error.response.data){
+                console.log(error)
+              /*   if(error.response.data){
                     mensagemErro(error.response.data)
-                }
+                } */
             })
         }
         
@@ -72,9 +102,9 @@ class CadastroLancamento extends React.Component{
 
     }
 
-    handleInputChange = (event) => {
+    handleValorParcela = (event) => {
         let parcelas = this.state.parcelas;
-        for(let i in parcelas){
+        for(let i = 0; parcelas.length > i; i++){
             if(i == event.target.name){
                 parcelas[i].valor = event.target.value;
                 this.setState ({parcelas});
@@ -82,6 +112,18 @@ class CadastroLancamento extends React.Component{
             }
         }
     }
+
+    handleVencimentoParcela = (event) => {
+        let parcelas = this.state.parcelas;
+        for(let i = 0; parcelas.length > i; i++){
+            if(i == event.target.name){
+                let newDate = event.target.value
+                parcelas[i].dataVencimento = newDate;
+                this.setState ({parcelas});
+                break;
+            }
+        }
+    }   
 
     salvar = () =>{
         const  {tipoLancamento,valor,contribuinte,parcelas} = this.state
@@ -169,7 +211,7 @@ class CadastroLancamento extends React.Component{
         }
         const valorDivisao = (valor/qtdParcela).toFixed(2) 
         const linhas = []
-        console.log('preenche parcela >',this.state.qtdParcela)
+
         for (var i = 0; i < this.state.qtdParcela; i++) {
             linhas.push(
                 <tr key={i}>
@@ -181,15 +223,17 @@ class CadastroLancamento extends React.Component{
         this.setState({rows : linhas})
     }
 
-    tabelaChange = (e) =>{
+  /*   tabelaChange = (e) =>{
         const value = e.target.value
         const posicao = e.target.posicao
         const name = e.target.name
         
-    }
+    } */
 
     render(){
         const tiposLancamentos = this.lancamentoService.tiposLancamentos()
+
+   
 
         return(
             <div>
@@ -233,11 +277,15 @@ class CadastroLancamento extends React.Component{
 
                         <DataTable value={this.state.parcelas} >
                             <Column  header="Numero"/>
-                            {/* <Column field="valor" header="Valor" /> */}
+                          
                             <Column 
-                                body={(parcela,props) => <input value={parcela.valor} name={props.rowIndex}  onChange={this.handleInputChange} /> }
+                                body={(parcela,props) => <input value={parcela.valor} name={props.rowIndex}  onChange={this.handleValorParcela} /> }
                                 header="Valor" />
-                            <Column header="Vencimento" field="Index" />
+                             <Column 
+                                body={(parcela,props) =>
+                                 <Calendar  id="basic" value={parcela.dataVencimento ? parcela.dataVencimento: new Date()} name={props.rowIndex} onChange={this.handleVencimentoParcela}  	dateFormat='dd/mm/yy'/> 
+                                 }
+                                header="Vencimento" field="Index" /> 
                         </DataTable>
                         
                         <br/>

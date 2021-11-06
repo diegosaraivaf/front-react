@@ -16,6 +16,12 @@ export default class LancamentoService extends ApiService {
         if(lancamentoFiltro.tipo){
             params = `${params}&tipoLancamento=${lancamentoFiltro.tipo}`
         }
+        if(lancamentoFiltro.contribuinteNome){
+            params = `${params}&contribuinteNome=${lancamentoFiltro.contribuinteNome}`
+        }
+        if(lancamentoFiltro.contribuinteDocumento){
+            params = `${params}&contribuinteDocumento=${lancamentoFiltro.contribuinteDocumento}`
+        }
 
         return this.get(params)
     }

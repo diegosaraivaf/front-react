@@ -14,8 +14,6 @@ class ApiService {
     static adicionarTokenCabecalho(token){
         if(token){
             httpClient.defaults.headers.common['Authorization'] = `Bearer ${token}`
-
-            console.log('registrou o token : ',httpClient.defaults.headers.common['Authorization'])
         }
     }
 

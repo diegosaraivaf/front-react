@@ -161,11 +161,8 @@ class CadastroLancamento extends React.Component{
     }
 
     aoAlterarDocumento = (event) => {
-        /* this.setState({contribuinte: {documento : event.target.value}}) */
-    
         this.setState(prevState => ({contribuinte :{...prevState.contribuinte, documento: event.target.value}}));  
        
-
         this.contribuinteService.buscarPorDocumento(event.target.value).then(response =>{
             if(response.data){
                 this.setState({

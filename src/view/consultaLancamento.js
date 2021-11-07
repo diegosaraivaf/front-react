@@ -142,29 +142,8 @@ class ConsultaLancamento extends React.Component {
                         <br/>
                         <button onClick={this.pesquisar} className="btn btn-success">Pesquisar</button>
                         <button onClick={this.prepararCadastro} className="btn btn-danger">Cadrastrar</button> 
-                        <br/> <br/>
-                        {/* <table className="table">
-                            <thead>
-                                <tr>
-                                    <th>Contribuinte</th>
-                                    <th>Tipo</th>
-                                    <th>Valor</th>
-                                </tr>
-
-                            </thead>
-                            <tbody>
-                                {this.state.rows}
-                            </tbody>
-
-                        </table> */}
-
-{/*          
-  <div>
-                <button onClick={e => this.editar(lanc)} className="btn btn-primary">Editar</button> 
-                <button onClick={e => this.confirmarDelecao(lanc)} className="btn btn-danger">Excluir</button>
-            </div>
-    } */}
-
+                        <br/>
+                        <br/>              
                         <div className="card">
                             <DataTable value={this.state.lancamentos} >
                                 <Column body={(row)=> row.contribuinte.documento +' - '+ row.contribuinte.nome} header="Contribuinte"/>

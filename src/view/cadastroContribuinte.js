@@ -8,6 +8,20 @@ class CadastroContribuinte extends React.Component {
         super()
         this.contribuinteService = new ContribuinteService()
     }
+
+    componentDidMount(){
+        const parametros = this.props.match.params
+
+        if(parametros.id){
+            this.contribuinteService.obterPorId(parametros.id).then(response =>{
+                this.setState({...response.data})
+                console.log('teste')
+            }).catch(error =>{
+                console.log(error)
+            })
+        }
+    }
+
     state = {
         documento : '',
         nome : '',

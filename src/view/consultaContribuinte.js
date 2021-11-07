@@ -2,6 +2,7 @@ import React from "react";
 import Card from "../components/card";
 import ContribuinteService from "../app/service/contribuinteService";
 import { mensagemErro, mensagemSucesso } from "../components/toastr";
+import { confirmPopup } from 'primereact/confirmpopup'
 
 class ConsultaContribuinte extends React.Component{
     state = {
@@ -21,7 +22,10 @@ class ConsultaContribuinte extends React.Component{
                         <td>{contribuinte.nome}</td>
                         <td>{contribuinte.documento}</td>
                         <td>{contribuinte.endereco}</td>
-                        <td><butto onClick={e =>  this.deletar(contribuinte)} className="btn btn-danger">Excluir</butto> </td>
+                        <td>
+                            <button onClick={(e) => this.confirmarExclusao(e,contribuinte)} className="btn btn-danger">Excluir</button>
+                            <button onClick={(e) => this.editar(contribuinte.id)} className="btn btn-primary">Editar</button>
+                        </td>
                     </tr>
                 )
             })
@@ -41,11 +45,39 @@ class ConsultaContribuinte extends React.Component{
         })
     }
 
+    confirmarExclusao= (event,contribuinte) =>  {
+        confirmPopup({
+            target: event.currentTarget,
+            message: 'Você tem tem certeza que deseja excluir este registro?',
+            icon: 'pi pi-exclamation-triangle',
+            acceptLabel:'Sim',
+            rejectLabel:'Não',
+            accept: () => this.deletar(contribuinte)
+        });
+    }
+
+    editar = (idContribuinte) =>{
+        this.props.history.push(`cadastro-contribuinte/${idContribuinte}`)
+    }
+
     render(){
         return(
             <div>
                 <div className="container">
                     <Card title="Consulta de Contribuinte">
+                        <div className="row">
+                            <div className="col-md-4">
+                                Documento
+                                <input className="form-control"/>
+                            </div>
+                            <div className="col-md-8">
+                                Nome
+                                <input className="form-control"/>
+                            </div>
+                        </div>
+                        Endereco
+                        <input className="form-control"/>
+                        <br/>
                         <button onClick={this.pesquisar} className="btn btn-success">Pesquisar</button>
                         <button onClick={e => this.props.history.push('cadastro-contribuinte')} className="btn btn-danger">Cadastrar</button>
 
@@ -63,6 +95,7 @@ class ConsultaContribuinte extends React.Component{
                             </tbody>
 
                         </table>
+
                     </Card>
                 </div>
             </div>

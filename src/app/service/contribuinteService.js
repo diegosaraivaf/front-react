@@ -18,7 +18,10 @@ export default class ContribuinteService extends ApiService {
     }
 
     deletar(contribuinte){
-        console.log(contribuinte)
         return this.delete(`/${contribuinte.id}`)
+    }
+
+    obterPorId(idContribuinte){
+        return this.get(`/${idContribuinte}`)
     }
 }

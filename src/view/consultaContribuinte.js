@@ -6,7 +6,10 @@ import { confirmPopup } from 'primereact/confirmpopup'
 
 class ConsultaContribuinte extends React.Component{
     state = {
-        contribuintes: []
+        contribuintes: [],
+        documento: '',
+        nome: '',
+        endereco: ''
     }
 
     constructor(){
@@ -15,7 +18,14 @@ class ConsultaContribuinte extends React.Component{
     }
 
     pesquisar = () =>{
-        this.contribuinteService.pesquisar().then(response =>{
+        const {documento,nome,endereco} =this.state
+        const contribuinte = {
+            documento,
+            nome,
+            endereco
+        }
+
+        this.contribuinteService.pesquisar(contribuinte).then(response =>{
             const linhas = response.data.map((contribuinte,index) => {
                 return (
                     <tr key={index}>
@@ -60,6 +70,13 @@ class ConsultaContribuinte extends React.Component{
         this.props.history.push(`cadastro-contribuinte/${idContribuinte}`)
     }
 
+    handleChange = (event) =>{
+        const value = event.target.value
+        const name = event.target.name
+
+        this.setState({[name] : value})
+    }
+
     render(){
         return(
             <div>
@@ -68,15 +85,15 @@ class ConsultaContribuinte extends React.Component{
                         <div className="row">
                             <div className="col-md-4">
                                 Documento
-                                <input className="form-control"/>
+                                <input name="documento" onChange={this.handleChange} className="form-control" />
                             </div>
                             <div className="col-md-8">
                                 Nome
-                                <input className="form-control"/>
+                                <input name="nome" onChange={this.handleChange} className="form-control"/>
                             </div>
                         </div>
                         Endereco
-                        <input className="form-control"/>
+                        <input name="endereco" onChange={this.handleChange} className="form-control"/>
                         <br/>
                         <button onClick={this.pesquisar} className="btn btn-success">Pesquisar</button>
                         <button onClick={e => this.props.history.push('cadastro-contribuinte')} className="btn btn-danger">Cadastrar</button>

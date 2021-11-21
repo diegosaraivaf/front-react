@@ -105,7 +105,7 @@ class CadastroLancamento extends React.Component{
     handleValorParcela = (event) => {
         let parcelas = this.state.parcelas;
         for(let i = 0; parcelas.length > i; i++){
-            if(i == event.target.name){
+            if(i === event.target.name){
                 parcelas[i].valor = event.target.value;
                 this.setState ({parcelas});
                 break;
@@ -116,7 +116,7 @@ class CadastroLancamento extends React.Component{
     handleVencimentoParcela = (event) => {
         let parcelas = this.state.parcelas;
         for(let i = 0; parcelas.length > i; i++){
-            if(i == event.target.name){
+            if(i === event.target.name){
                 let newDate = event.target.value
                 parcelas[i].dataVencimento = newDate;
                 this.setState ({parcelas});
@@ -138,6 +138,7 @@ class CadastroLancamento extends React.Component{
             mensagemSucesso('Lancamento salvo com sucesso')
             this.props.history.push('/consulta-lancamento')
         }).catch(error =>{
+            console.log(error)
             mensagemErro(error.response.data)
         })
     }

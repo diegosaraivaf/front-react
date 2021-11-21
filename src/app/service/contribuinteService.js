@@ -9,8 +9,20 @@ export default class ContribuinteService extends ApiService {
         return this.post('/',contribuinte)
     }
 
-    pesquisar(){
-        return this.get('/')
+    pesquisar(contribuinte){
+        let params =  `?a=a`
+        
+        if(contribuinte.nome){
+            params = `${params}&nome=${contribuinte.nome}`
+        }
+        if(contribuinte.documento){
+            params = `${params}&documento=${contribuinte.documento}`
+        }
+        if(contribuinte.endereco){
+            params = `${params}&endereco=${contribuinte.endereco}`
+        }
+
+        return this.get(params)
     }
 
     buscarPorDocumento(documento){

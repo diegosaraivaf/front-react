@@ -3,7 +3,6 @@ import Card from  '../components/card'
 import { withRouter } from 'react-router-dom'
 import { mensagemErro } from '../components/toastr'
 import UsuarioService from '../app/service/usuarioService'
-import ApiService from '../app/apiservice'
 import { AuthContext } from '../context/provedorAutenticacao'
 
 
